@@ -1,54 +1,47 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.text.DecimalFormat;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+import java.util.List;
+import java.util.Objects;
 
 public class ImagePanel extends JPanel {
 
-    ImageIcon blue = new ImageIcon("C:\\Users\\Miloszka\\IdeaProjects\\projektjpwp\\projekt\\src\\images\\blue.png");
-    ImageIcon red = new ImageIcon("C:\\Users\\Miloszka\\IdeaProjects\\projektjpwp\\projekt\\src\\images\\red.png");
-    ImageIcon orange = new ImageIcon("C:\\Users\\Miloszka\\IdeaProjects\\projektjpwp\\projekt\\src\\images\\orange.png");
-    ImageIcon black = new ImageIcon("C:\\Users\\Miloszka\\IdeaProjects\\projektjpwp\\projekt\\src\\images\\black.png");
-    final int BLUE_WITH = blue.getIconWidth();
-    final int BLUE_HEIGTH = blue.getIconHeight();
-    final int RED_WITH = red.getIconWidth();
-    final int RED_HEIGTH = red.getIconHeight();
-    final int ORANGE_WITH = orange.getIconWidth();
-    final int ORANGE_HEIGTH = orange.getIconHeight();
-    final int BLACK_WITH = black.getIconWidth();
-    final int BLACK_HEIGTH = black.getIconHeight();
+    ImageIcon blueBasketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\blue-basket.png")));
+    ImageIcon greenBasketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\green-basket.png")));
+    ImageIcon pinkBasketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\pink-basket.png")));
+    ImageIcon redBasketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\red-basket.png")));
 
-    Point image_corner_blue;
-    Point image_corner_red;
-    Point image_corner_orange;
-    Point image_corner_black;
-    Point point1;
-    Point point2;
-    Point point3;
-    Point point4;
+    List<Basket> basketList = List.of(
+            new Basket(blueBasketIcon),
+            new Basket(greenBasketIcon),
+            new Basket(pinkBasketIcon),
+            new Basket(redBasketIcon)
+    );
+    List<ColorElipse> colorElipseList = List.of(
+            new ColorElipse(new Ellipse2D.Double(100, 300, elipseWidth, elipseHeight), new Color(135,206,250)),
+            new ColorElipse(new Ellipse2D.Double(400, 600, elipseWidth, elipseHeight), new Color(235,206,100))
+    );
 
-    int second, minute;
-    String ddSecond, ddMinute;
-    DecimalFormat dFormat = new DecimalFormat("00");
-    JLabel timeLabel;
-    Timer timer;
+    Point previousPoint;
+
+    final static int elipseWidth = 80;
+    final static int elipseHeight = 80;
+
+    final static int rectangleWidth= 140;
+    final static int rectangleHeight= 200;
+
+    Object previousPressedComponent = null;
+
 
     ImagePanel() {
-
-        image_corner_blue = new Point(0, 100);
-        image_corner_red = new Point(300, 100);
-        image_corner_orange = new Point(600, 100);
-        image_corner_black = new Point(900, 100);
-        ClickListen clickListen = new ClickListen();
-        this.addMouseListener(clickListen);
-
-        DragListen dragListen = new DragListen();
-        this.addMouseMotionListener(dragListen);
-
-
         JPanel panel = new JPanel();
+        this.addMouseListener(new PressListener());
+        this.addMouseMotionListener(new DragListener());
 
         JButton jButton = new JButton("MENU");
+
 
         JLabel timeLabel = new JLabel();
         timeLabel.setText("     Time: " + "00:00");
@@ -59,7 +52,7 @@ public class ImagePanel extends JPanel {
         level.setVisible(true);
 
         JLabel user = new JLabel();
-        user.setText("          User: X");
+        user.setText("          user: X");
         user.setVisible(true);
 
         panel.setBounds(100, 250, 500, 250);
@@ -73,80 +66,79 @@ public class ImagePanel extends JPanel {
         this.add(panel, BorderLayout.NORTH);
         this.setVisible(true);
 
+//        for (Basket basket: basketList) {
+//            basket.addMouseListener(new PressListener());
+//            basket.addMouseMotionListener(new DragListener());
+//        }
+//        PressListener pressListener = new PressListener();
+//        DragListener dragListener = new DragListener();
+//        for (ColorElipse colorElipse: colorElipseList) {
+//            colorElipse.addMouseListener(new PressListener());
+//            colorElipse.addMouseMotionListener(new DragListener());
+//        }
+        // ustawianie polozenia kolorow
+
     }
 
-    public void paintComponent(Graphics g) {
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
 
         super.paintComponent(g);
-        blue.paintIcon(this, g, (int) image_corner_blue.getX(), (int) image_corner_blue.getY());
-        red.paintIcon(this, g, (int) image_corner_red.getX(), (int) image_corner_red.getY());
-        orange.paintIcon(this, g, (int) image_corner_orange.getX(), (int) image_corner_orange.getY());
-        black.paintIcon(this, g, (int) image_corner_black.getX(), (int) image_corner_black.getY());
-    }
-
-    private class ClickListen extends MouseAdapter {
-
-        public void mousePressed(MouseEvent event) {
-            point1 = event.getPoint();
-            point2 = event.getPoint();
-            point3 = event.getPoint();
-            point4 = event.getPoint();
-
+        for (ColorElipse colorElipse: colorElipseList) {
+            g2.setColor(colorElipse.getColor());
+            Ellipse2D.Double elipse2D = colorElipse.getElipse();
+            g2.fill(elipse2D);
+//            g.drawOval((int)elipse2D.getX(), (int)elipse2D.getY(), colorElipse.getWidth(), colorElipse.getHeight());
+//            g.fillOval((int)elipse2D.getX(), (int)elipse2D.getY(), colorElipse.getWidth(), colorElipse.getHeight());
         }
 
     }
 
-    private class DragListen extends MouseMotionAdapter {
+    private class PressListener extends MouseAdapter{
+        @Override
+        public void mousePressed(MouseEvent e) {
 
-        public void mouseDragged(MouseEvent event) {
-            normalTimer();
-            Point currentPoint = event.getPoint();
-            image_corner_blue.translate(
-                    (int) (currentPoint.getX() - point1.getX()),
-                    (int) (currentPoint.getY() - point1.getY())
-            );
 
-            image_corner_red.translate(
-                    (int) (currentPoint.getX() - point2.getX()),
-                    (int) (currentPoint.getY() - point2.getY())
-            );
+                for (ColorElipse colorElipse: colorElipseList) {
+                    if ((e.getButton() == 1) && colorElipse.getElipse().contains(e.getX(), e.getY())) {
+                        previousPoint = e.getPoint();
+                        previousPressedComponent = colorElipse;
+                    }
+                }
 
-            image_corner_orange.translate(
-                    (int) (currentPoint.getX() - point3.getX()),
-                    (int) (currentPoint.getY() - point3.getY())
-            );
+        }
 
-            image_corner_black.translate(
-                    (int) (currentPoint.getX() - point4.getX()),
-                    (int) (currentPoint.getY() - point4.getY())
-            );
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            super.mouseReleased(e);
+            previousPressedComponent = null;
+        }
+    }
+    private class DragListener extends MouseMotionAdapter{
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            if(previousPressedComponent == null)
+                return;
 
-            point1 = currentPoint;
+            Point currentPoint = e.getPoint();
+
+            if(previousPressedComponent instanceof Basket || previousPressedComponent instanceof BasketSocket){
+                ImageRectangle imageRectangle = (Basket) previousPressedComponent;
+                Rectangle2D.Double rectangle2D = imageRectangle.getRectangle();
+                rectangle2D.setRect(currentPoint.getX(), currentPoint.getY(), rectangleWidth, rectangleHeight);
+                imageRectangle.setRectangle(rectangle2D);
+
+            }
+            else if(previousPressedComponent instanceof ColorElipse){
+                ColorElipse colorElipse = (ColorElipse) previousPressedComponent;
+                Ellipse2D.Double elipse2D = colorElipse.getElipse();
+                elipse2D.setFrame(currentPoint.getX() - ((double)elipseWidth/2.0), currentPoint.getY() - ((double)elipseHeight/2.0), elipseWidth, elipseHeight);
+                colorElipse.setElipse(elipse2D);
+            }
+
+            previousPoint = currentPoint;
             repaint();
         }
-
-    }
-
-    public void normalTimer() {
-        second = 0;
-        minute = 0;
-        timer = new Timer(1000, new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                second++;
-                ddSecond = dFormat.format(second);
-                ddMinute = dFormat.format(minute);
-                timeLabel.setText(ddMinute + ":" + ddSecond);
-
-                if (second == 60) {
-                    second = 0;
-                    minute++;
-                    ddSecond = dFormat.format(second);
-                    ddMinute = dFormat.format(minute);
-                    timeLabel.setText(ddMinute + ":" + ddSecond);
-                }
-            }
-        });
     }
 }
