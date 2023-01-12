@@ -21,11 +21,6 @@ public class ImagePanel extends JPanel {
     ImageIcon emptyBasketSocketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\empty-basket-socket.png")));
 
 //    ImageIcon emptyBasketSocketIcon = new ImageIcon(((new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\empty-basket-socket.png")))).getImage()).getScaledInstance(70, 100, java.awt.Image.SCALE_SMOOTH));
-//    ImageIcon greenBasketIcon = new ImageIcon(((new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\\\baskets\\\\green-basket.png")))).getImage()).getScaledInstance(70, 100, java.awt.Image.SCALE_SMOOTH));
-//    ImageIcon emptyBasketSocketIcon = new ImageIcon(((new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\empty-basket-socket.png")))).getImage()).getScaledInstance(70, 100, java.awt.Image.SCALE_SMOOTH));
-//    ImageIcon emptyBasketSocketIcon = new ImageIcon(((new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\empty-basket-socket.png")))).getImage()).getScaledInstance(70, 100, java.awt.Image.SCALE_SMOOTH));
-//    ImageIcon emptyBasketSocketIcon = new ImageIcon(((new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\empty-basket-socket.png")))).getImage()).getScaledInstance(70, 100, java.awt.Image.SCALE_SMOOTH));
-
 
     Point previousPoint;
 
@@ -68,6 +63,15 @@ public class ImagePanel extends JPanel {
         JPanel panel = new JPanel();
         this.addMouseListener(new PressListener());
         this.addMouseMotionListener(new DragListener());
+
+        String[] choices = {"MENU","Rozpocznij od nowa", "Zakoncz"};
+
+        final JComboBox<String> cb = new JComboBox<String>(choices);
+
+        cb.setMaximumSize(cb.getPreferredSize()); // added code
+        cb.setAlignmentX(Component.CENTER_ALIGNMENT);// added code
+        panel.add(cb);
+
 
         JButton jButton = new JButton("MENU");
 
@@ -120,19 +124,20 @@ public class ImagePanel extends JPanel {
         }
 
         for (Basket basket: basketList) {
-            basket.getImageIcon().paintIcon(this, g, (int) basket.getRectangle().getX(), (int) basket.getRectangle().getY());
+            if(!basket.isDisabled()){
+                basket.getImageIcon().paintIcon(this, g, (int) basket.getRectangle().getX(), (int) basket.getRectangle().getY());
+            }
         }
 
         for (ColorElipse colorElipse: colorElipseList) {
-            g2.setColor(colorElipse.getColor());
-            Ellipse2D.Double elipse2D = colorElipse.getElipse();
-            g2.fill(elipse2D);
-//            g.drawOval((int)elipse2D.getX(), (int)elipse2D.getY(), colorElipse.getWidth(), colorElipse.getHeight());
-//            g.fillOval((int)elipse2D.getX(), (int)elipse2D.getY(), colorElipse.getWidth(), colorElipse.getHeight());
+            if(!colorElipse.isDisabled()) {
+                g2.setColor(colorElipse.getColor());
+                Ellipse2D.Double elipse2D = colorElipse.getElipse();
+                g2.fill(elipse2D);
+//              g.drawOval((int)elipse2D.getX(), (int)elipse2D.getY(), colorElipse.getWidth(), colorElipse.getHeight());
+//              g.fillOval((int)elipse2D.getX(), (int)elipse2D.getY(), colorElipse.getWidth(), colorElipse.getHeight());
+            }
         }
-
-
-
     }
 
     private class PressListener extends MouseAdapter{
@@ -164,6 +169,42 @@ public class ImagePanel extends JPanel {
         @Override
         public void mouseReleased(MouseEvent e) {
             super.mouseReleased(e);
+
+            if(previousPressedComponent instanceof ColorElipse){
+                ColorElipse colorElipse = (ColorElipse) previousPressedComponent;
+                Ellipse2D.Double elipse2D = colorElipse.getElipse();
+                for (BasketSocket basketSocket: basketSocketList) {
+
+//                    Do sprawdzenia czy elipsa znajduje sie w prostokacie
+//                    basketSocket.getRectangle().contains(elipse2D.getBounds2D());
+
+                    if(elipse2D.intersects(basketSocket.getRectangle())){
+                        System.out.println("kolo przecina socket");
+                    }
+                }
+            }
+
+            if(previousPressedComponent instanceof Basket){
+                Basket basket = (Basket) previousPressedComponent;
+                Rectangle2D.Double rectangle = basket.getRectangle();
+                for (BasketSocket basketSocket: basketSocketList) {
+                    if(rectangle.intersects(basketSocket.getRectangle()) && basketSocket.getBasket() == null && !basket.isDockedInSocket){
+                        basketSocket.setBasket(basket);
+                        basketSocket.setImageIcon(basket.getImageIcon());
+                        basket.setDockedInSocket(true);
+                        basket.setDisabled(true);
+                        System.out.println("kosz przecina socket");
+                    }
+//                    if(rectangle.intersects(basketSocket.getRectangle()) && basketSocket.getBasket() == null && !basket.isDockedInSocket){
+//                        basketSocket.setBasket(basket);
+//                        basketSocket.setImageIcon(basket.getImageIcon());
+//                        basket.setDockedInSocket(true);
+//                        System.out.println("kosz przecina socket");
+//                    }
+                }
+                repaint();
+            }
+
             previousPressedComponent = null;
         }
     }

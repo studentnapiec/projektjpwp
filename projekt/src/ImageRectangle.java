@@ -4,7 +4,7 @@ import java.awt.geom.Rectangle2D;
 
 public class ImageRectangle{
 
-    private final ImageIcon imageIcon;
+    private ImageIcon imageIcon;
 
     private Rectangle2D.Double rectangle;
 
@@ -16,7 +16,9 @@ public class ImageRectangle{
     public ImageIcon getImageIcon() {
         return imageIcon;
     }
-
+    public void setImageIcon(ImageIcon imageIcon){
+        this.imageIcon = imageIcon;
+    }
     public Rectangle2D.Double getRectangle() {
         return rectangle;
     }
