@@ -4,9 +4,9 @@ import java.awt.geom.Ellipse2D;
 
 public class ColorElipse {
 
-    boolean isDisabled = false;
-    Ellipse2D.Double elipse;
-    Color color;
+    private boolean isDisabled = false;
+    private Ellipse2D.Double elipse;
+    private Color color;
 
 
     public ColorElipse(Ellipse2D.Double elipse, Color color) {

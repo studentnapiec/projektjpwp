@@ -3,8 +3,8 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public class Basket extends ImageRectangle {
-    boolean isDockedInSocket = false;
-    boolean isDisabled = false;
+    private boolean isDockedInSocket = false;
+    private boolean isDisabled = false;
 
     public boolean isDockedInSocket() {
         return isDockedInSocket;

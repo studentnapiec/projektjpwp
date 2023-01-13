@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public class BasketSocket extends ImageRectangle {
-    Basket basket = null;
+    private Basket basket = null;
 
     public BasketSocket(ImageIcon image, Rectangle2D.Double rectangle, Basket basket) {
         super(image, rectangle);
