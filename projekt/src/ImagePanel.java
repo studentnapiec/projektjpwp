@@ -1,14 +1,13 @@
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class ImagePanel extends JPanel {
@@ -29,12 +28,17 @@ public class ImagePanel extends JPanel {
     final static int rectangleWidth= 140;
     final static int rectangleHeight= 200;
 
+    static int gameScore = 0;
+    static int scoreAddPortion = 2;
 
+
+    // domyslna kolejnosc kolorow to blue, green , pink, red tak jak ponizej
     ImageIcon blueBasketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\blue-basket.png")));
     ImageIcon greenBasketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\green-basket.png")));
     ImageIcon pinkBasketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\pink-basket.png")));
     ImageIcon redBasketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\red-basket.png")));
     ImageIcon emptyBasketSocketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\empty-basket-socket.png")));
+
 
     URI blueSound;
     URI greenSound;
@@ -52,13 +56,14 @@ public class ImagePanel extends JPanel {
 
 
 
-    static int roundTime = 6;
+    static int roundTime = 20;
     static int roundRemainingTime=roundTime;
 
     static int basketsDocked = 0;
 
     Random random = new Random();
     JLabel timeLabel;
+    JLabel scoreLabel;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
 
     MouseDragListener mouseDragListener = new MouseDragListener();
@@ -96,30 +101,6 @@ public class ImagePanel extends JPanel {
         }
     });
 
-
-
-
-    List<Basket> basketList = List.of(
-            new Basket(blueBasketIcon),
-            new Basket(greenBasketIcon),
-            new Basket(pinkBasketIcon),
-            new Basket(redBasketIcon)
-    );
-
-    List<BasketSocket> basketSocketList = List.of(
-            new BasketSocket(emptyBasketSocketIcon, new Rectangle2D.Double(firstBacketSocketX, basketSocketsY, rectangleWidth, rectangleHeight)),
-            new BasketSocket(emptyBasketSocketIcon, new Rectangle2D.Double(firstBacketSocketX + basketSocketsXGap, basketSocketsY, rectangleWidth, rectangleHeight)),
-            new BasketSocket(emptyBasketSocketIcon, new Rectangle2D.Double(firstBacketSocketX + 2 * basketSocketsXGap, basketSocketsY, rectangleWidth, rectangleHeight)),
-            new BasketSocket(emptyBasketSocketIcon, new Rectangle2D.Double(firstBacketSocketX + 3* basketSocketsXGap, basketSocketsY, rectangleWidth, rectangleHeight))
-    );
-    List<ColorElipse> colorElipseList = List.of(
-            new ColorElipse(new Ellipse2D.Double(100, 300, elipseWidth, elipseHeight), new Color(153,217,234)),
-            new ColorElipse(new Ellipse2D.Double(400, 600, elipseWidth, elipseHeight), new Color(181,230,29)),
-
-            new ColorElipse(new Ellipse2D.Double(400, 600, elipseWidth, elipseHeight), new Color(255,174,201)),
-            new ColorElipse(new Ellipse2D.Double(400, 600, elipseWidth, elipseHeight), new Color(237,28,36))
-    );
-
     static boolean isSoundsPlayed = false;
 
     static final String[] choices = {"MENU","Rozpocznij od nowa", "Zakoncz"};
@@ -132,9 +113,108 @@ public class ImagePanel extends JPanel {
     List<URI> soundUriList;
 
     boolean isAfterSoundsRepaintedFrame = false;
+    List<Basket> basketList;
+    List<BasketSocket> basketSocketList;
+    List<ColorElipse> colorElipseList;
+
+    List<Integer> colorsOrderIndexes = new ArrayList<>(Arrays.asList(0, 1, 2, 3));
+
+    void initAndShuffleGraphicSoundElements(){
+        final int defaultArraySize = 4;
+
+        //tablica indexow wykorzystywanych do uporzadkowania obiektow w listach
+//        int[] colorsOrder = new int[defaultArraySize];
+
+
+        // przetasowanie kolejnosci kolorow
+        Collections.shuffle(colorsOrderIndexes);
+
+        Basket[] basketArray = new Basket[defaultArraySize];
+        BasketSocket[] basketSocketArray = new BasketSocket[defaultArraySize];
+        ColorElipse[] colorElipseArray = new ColorElipse[defaultArraySize];
+        URI[] soundsArray = new URI[defaultArraySize];
+
+
+
+//        basketArray[colorsOrderIndexes.get(0)] = new Basket(blueBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.values()[colorsOrderIndexes.get(0)]);
+//        basketArray[colorsOrderIndexes.get(1)] = new Basket(greenBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.values()[colorsOrderIndexes.get(1)]);
+//        basketArray[colorsOrderIndexes.get(2)] = new Basket(pinkBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight),  ColorOrder.values()[colorsOrderIndexes.get(2)]);
+//        basketArray[colorsOrderIndexes.get(3)] = new Basket(redBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.values()[colorsOrderIndexes.get(3)]);
+
+        basketArray[0] = new Basket(blueBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.BLUE);
+        basketArray[1] = new Basket(greenBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.GREEN);
+        basketArray[2] = new Basket(pinkBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight),  ColorOrder.PINK);
+        basketArray[3] = new Basket(redBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.RED);
+
+
+        colorElipseArray[0] = new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(153,217,234), ColorOrder.BLUE);
+        colorElipseArray[1] = new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(181,230,29), ColorOrder.GREEN);
+        colorElipseArray[2] = new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(255,174,201), ColorOrder.PINK);
+        colorElipseArray[3] = new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(237,28,36), ColorOrder.RED);
+
+        try {
+            blueSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\blue.wav")).toURI();
+            greenSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\green.wav")).toURI();
+            pinkSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\pink.wav")).toURI();
+            redSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\red.wav")).toURI();
+
+        }catch (java.net.URISyntaxException e){
+            throw new RuntimeException("Niepoprawny adres uri pliku dzwiekowego");
+        }
+
+        Map<ColorOrder, URI> colorSoundMap = new HashMap<>();
+        colorSoundMap.put(ColorOrder.BLUE, blueSound);
+        colorSoundMap.put(ColorOrder.GREEN, greenSound);
+        colorSoundMap.put(ColorOrder.PINK, pinkSound);
+        colorSoundMap.put(ColorOrder.RED, redSound);
+
+        for (int i = 0; i < defaultArraySize; i++) {
+            basketSocketArray[i] = new BasketSocket(emptyBasketSocketIcon, new Rectangle2D.Double(firstBacketSocketX + ( i * basketSocketsXGap), basketSocketsY, rectangleWidth, rectangleHeight), ColorOrder.values()[colorsOrderIndexes.get(i)]);
+            soundsArray[i] = colorSoundMap.get(ColorOrder.values()[colorsOrderIndexes.get(i)]);
+        }
+
+
+//        soundsArray[1] = greenSound;
+//        soundsArray[2] = pinkSound;
+//        soundsArray[3] = redSound;
+
+
+
+        basketList = Arrays.asList(basketArray);
+        basketSocketList = Arrays.asList(basketSocketArray);
+        colorElipseList = Arrays.asList(colorElipseArray);
+
+        soundUriList = Arrays.asList(soundsArray);
+        soundPlayer.setSoundList(soundUriList);
+//
+//        basketList = List.of(
+//                new Basket(blueBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight)),
+//                new Basket(greenBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight)),
+//                new Basket(pinkBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight)),
+//                new Basket(redBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight))
+//        );
+//
+//        basketSocketList = List.of(
+//                new BasketSocket(emptyBasketSocketIcon, new Rectangle2D.Double(firstBacketSocketX, basketSocketsY, rectangleWidth, rectangleHeight)),
+//                new BasketSocket(emptyBasketSocketIcon, new Rectangle2D.Double(firstBacketSocketX + basketSocketsXGap, basketSocketsY, rectangleWidth, rectangleHeight)),
+//                new BasketSocket(emptyBasketSocketIcon, new Rectangle2D.Double(firstBacketSocketX + 2 * basketSocketsXGap, basketSocketsY, rectangleWidth, rectangleHeight)),
+//                new BasketSocket(emptyBasketSocketIcon, new Rectangle2D.Double(firstBacketSocketX + 3* basketSocketsXGap, basketSocketsY, rectangleWidth, rectangleHeight))
+//        );
+//        colorElipseList = List.of(
+//                new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(153,217,234)),
+//                new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(181,230,29)),
+//
+//                new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(255,174,201)),
+//                new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(237,28,36))
+//        );
+    }
 
 
     ImagePanel() {
+
+        initAndShuffleGraphicSoundElements();
+
+
         panel = new JPanel();
         this.addMouseListener(mouseClickListener);
         this.addMouseMotionListener(mouseDragListener);
@@ -154,6 +234,8 @@ public class ImagePanel extends JPanel {
 //        timeLabel.setText("     Time: " + "00:00");
         timeLabel.setVisible(true);
 
+        scoreLabel = new JLabel();
+        scoreLabel.setVisible(true);
         level = new JLabel();
 
         level.setVisible(true);
@@ -168,6 +250,7 @@ public class ImagePanel extends JPanel {
         panel.add(jMenu);
         panel.add(level);
         panel.add(timeLabel);
+        panel.add(scoreLabel);
         panel.add(user);
 
         this.add(panel, BorderLayout.NORTH);
@@ -185,25 +268,11 @@ public class ImagePanel extends JPanel {
 //            colorElipse.addMouseMotionListener(new DragListener());
 //        }
         // ustawianie polozenia kolorow
-        try {
-            blueSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\blue.wav")).toURI();
-            greenSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\green.wav")).toURI();
-            pinkSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\pink.wav")).toURI();
-            redSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\red.wav")).toURI();
-            soundUriList = List.of(
-                    blueSound, greenSound, pinkSound, redSound
-            );
-
-
-        }catch (java.net.URISyntaxException e){
-            throw new RuntimeException("Niepoprawny adres uri pliku dzwiekowego");
-        }
-
 
         timerSound.start();
 
         if(!getIsSoundsPlayed()){
-            soundPlayer.setSoundList(soundUriList);
+//            soundPlayer.setSoundList(soundUriList);
             soundPlayer.playSoundList();
         }
 
@@ -212,7 +281,8 @@ public class ImagePanel extends JPanel {
     public void initGame(){
         timeLabel.setText("     Time: " + simpleDateFormat.format(new Date(TimeUnit.SECONDS.toMillis(roundTime))));
         level.setText("         Level: 1");
-        user.setText("          user: Student");
+        scoreLabel.setText("     Score: " + "0");
+        user.setText("          User: Student");
         timerSound.start();
     }
 
@@ -232,16 +302,17 @@ public class ImagePanel extends JPanel {
 
 
             for (BasketSocket basketSocket : basketSocketList) {
-                basketSocket.getImageIcon().paintIcon(this, g, (int) basketSocket.getRectangle().getX(), (int) basketSocket.getRectangle().getY());
                 if (basketSocket.getBasket() != null && basketSocket.getBasket().isDockedInSocket()) {
                     basketsDocked += 1;
                 }
+                basketSocket.getImageIcon().paintIcon(this, g, (int) basketSocket.getRectangle().getX(), (int) basketSocket.getRectangle().getY());
+
             }
 
 
         for (ColorElipse colorElipse: colorElipseList) {
             if(!colorElipse.isDisabled() && basketsDocked == basketList.size()) {
-                g2.setColor(colorElipse.getColor());
+                g2.setColor(colorElipse.getRgbColorToPaint());
                 Ellipse2D.Double elipse2D = colorElipse.getElipse();
                 g2.fill(elipse2D);
 //              g.drawOval((int)elipse2D.getX(), (int)elipse2D.getY(), colorElipse.getWidth(), colorElipse.getHeight());
@@ -249,9 +320,7 @@ public class ImagePanel extends JPanel {
             }
         }
 
-        if(gameOverFlag){
-            gameOver(g);
-        }
+
 //        if (basketsDocked == basketList.size()){
 //            gameOver(g);
 //        }
@@ -264,6 +333,11 @@ public class ImagePanel extends JPanel {
                 }
             }
             timer.start();
+        }
+
+        if(gameOverFlag){
+//            timer.stop();
+            gameOver(g);
         }
 
 
@@ -290,13 +364,20 @@ public class ImagePanel extends JPanel {
     }
     
 
+    //restart to next level
     private void restartGame(){
-        for (Basket basket:basketList) {
 
-            for (BasketSocket basketSocket:basketSocketList) {
-                basketSocket.setImageIcon(emptyBasketSocketIcon);
-                basketSocket.setBasket(null);
-            }
+        initAndShuffleGraphicSoundElements();
+
+        this.addMouseListener(mouseClickListener);
+        this.addMouseMotionListener(mouseDragListener);
+
+        for (BasketSocket basketSocket:basketSocketList) {
+            basketSocket.setImageIcon(emptyBasketSocketIcon);
+            basketSocket.setBasket(null);
+        }
+
+        for (Basket basket:basketList) {
 
             int randXFromScreenRange = getRandomNextInt(50, 800);
             int randYFromScreenRange = getRandomNextInt(80, 250);
@@ -304,11 +385,19 @@ public class ImagePanel extends JPanel {
             basket.setDisabled(false);
             basket.setRectangle(new Rectangle2D.Double(randXFromScreenRange, randYFromScreenRange, rectangleWidth, rectangleHeight));
         }
-        this.addMouseListener(mouseClickListener);
-        this.addMouseMotionListener(mouseDragListener);
 
+        for (ColorElipse colorElipse:colorElipseList) {
+            int randXFromScreenRange = getRandomNextInt(50, 800);
+            int randYFromScreenRange = getRandomNextInt(80, 250);
+            colorElipse.setDisabled(false);
+            colorElipse.setElipse(new Ellipse2D.Double(randXFromScreenRange, randYFromScreenRange, elipseWidth, elipseHeight));
+        }
+
+        // restart to next level
         roundRemainingTime = roundTime - 2;
         roundTime = roundRemainingTime;
+
+
         isAfterSoundsRepaintedFrame = false;
         gameOverFlag = false;
         setIsSoundsPlayed(false);
@@ -330,28 +419,41 @@ public class ImagePanel extends JPanel {
 //                    previousPoint = e.getPoint();
 //                    previousPressedComponent = (Basket) source;
 //                }
-
-            for (Basket basket: basketList) {
-                if ((e.getButton() == MouseEvent.BUTTON1) && basket.getRectangle().contains(e.getX(), e.getY())) {
-                    previousPoint = e.getPoint();
-                    previousPressedComponent = basket;
-                }
-            }
-                for (ColorElipse colorElipse: colorElipseList) {
+            if(basketsDocked == basketList.size()) {
+                for (ColorElipse colorElipse : colorElipseList) {
                     if ((e.getButton() == MouseEvent.BUTTON1) && colorElipse.getElipse().contains(e.getX(), e.getY())) {
                         previousPoint = e.getPoint();
                         previousPressedComponent = colorElipse;
                     }
                 }
+            }
+
+            if(basketsDocked != basketList.size()) {
+                for (Basket basket : basketList) {
+                    if ((e.getButton() == MouseEvent.BUTTON1) && basket.getRectangle().contains(e.getX(), e.getY())) {
+                        previousPoint = e.getPoint();
+                        previousPressedComponent = basket;
+                    }
+                }
+            }
 
         }
 
+        private void addScoreRepaint(){
+            gameScore+=scoreAddPortion;
+            scoreLabel.setText("     Score: " + gameScore);
+            repaint();
+        }
         @Override
         public void mouseReleased(MouseEvent e) {
             super.mouseReleased(e);
 
             if(previousPressedComponent instanceof ColorElipse){
                 ColorElipse colorElipse = (ColorElipse) previousPressedComponent;
+                if(colorElipse.isDisabled())
+                {
+                    return;
+                }
                 Ellipse2D.Double elipse2D = colorElipse.getElipse();
                 for (BasketSocket basketSocket: basketSocketList) {
 
@@ -359,21 +461,70 @@ public class ImagePanel extends JPanel {
 //                    basketSocket.getRectangle().contains(elipse2D.getBounds2D());
 
                     if(elipse2D.intersects(basketSocket.getRectangle())){
+//                        int colorElipseIndex = colorElipseList.indexOf(colorElipse);
+//                        int basketIndex = basketList.indexOf(basketSocket.getBasket());
+//                        if(colorElipseIndex == basketIndex){
+//                            addScoreRepaint();
+//                            colorElipse.setDisabled(true);
+//                        }else {
+//                            gameOverFlag=true;
+//                            timer.stop();
+//                            repaint();
+//                        }
+
+                        if(colorElipse.getColor().equals(basketSocket.getBasket().getColor())){
+                            addScoreRepaint();
+                            colorElipse.setDisabled(true);
+                        }else {
+                            gameOverFlag=true;
+                            timer.stop();
+                            repaint();
+                        }
+
                         System.out.println("kolo przecina socket");
                     }
                 }
             }
 
-            if(previousPressedComponent instanceof Basket){
+            else if(previousPressedComponent instanceof Basket){
+                boolean intersectsRightSocketColor = false;
                 Basket basket = (Basket) previousPressedComponent;
+                if(basket.isDisabled())
+                {
+                    return;
+                }
                 Rectangle2D.Double rectangle = basket.getRectangle();
                 for (BasketSocket basketSocket: basketSocketList) {
                     if(rectangle.intersects(basketSocket.getRectangle()) && basketSocket.getBasket() == null && !basket.isDockedInSocket()){
-                        basketSocket.setBasket(basket);
-                        basketSocket.setImageIcon(basket.getImageIcon());
-                        basket.setDockedInSocket(true);
-                        basket.setDisabled(true);
-                        System.out.println("kosz przecina socket");
+//
+//                        int basketIndex =  basketList.indexOf(basket);
+//
+//                        // index puszczonej piosenki jest taki sam jak socketu poniewaz tak sa na poczatku rundy inicjalizowane
+//
+//
+//
+//                        if(basketIndex == basketSocketColorMatchIndex){
+//                        basketSocket.setBasket(basket);
+//                        basketSocket.setImageIcon(basket.getImageIcon());
+//                        basket.setDockedInSocket(true);
+//                        basket.setDisabled(true);
+//                        System.out.println("kosz przecina socket");
+//                        }
+
+                        if(basket.getColor().equals(basketSocket.getColor())){
+                            basketSocket.setBasket(basket);
+                            basketSocket.setImageIcon(basket.getImageIcon());
+                            basket.setDockedInSocket(true);
+                            basket.setDisabled(true);
+                            System.out.println("kosz przecina socket");
+                            addScoreRepaint();
+                        }
+                        else{
+                            gameOverFlag = true;
+                            timer.stop();
+                            repaint();
+                            return;
+                        }
                     }
 //                    if(rectangle.intersects(basketSocket.getRectangle()) && basketSocket.getBasket() == null && !basket.isDockedInSocket){
 //                        basketSocket.setBasket(basket);
@@ -398,15 +549,22 @@ public class ImagePanel extends JPanel {
             Point currentPoint = e.getPoint();
 
             if(previousPressedComponent instanceof Basket){
-                Basket imageRectangle = (Basket) previousPressedComponent;
-                Rectangle2D.Double rectangle2D = imageRectangle.getRectangle();
+                Basket basket = (Basket) previousPressedComponent;
+                if(basket.isDisabled())
+                {
+                    return;
+                }
+                Rectangle2D.Double rectangle2D = basket.getRectangle();
                 rectangle2D.setRect(currentPoint.getX() - (rectangle2D.getWidth()/2.0), currentPoint.getY() - (rectangle2D.getHeight()/2.0), rectangleWidth, rectangleHeight);
-                imageRectangle.setRectangle(rectangle2D);
+                basket.setRectangle(rectangle2D);
             }
 
             else if(previousPressedComponent instanceof ColorElipse){
-
                 ColorElipse colorElipse = (ColorElipse) previousPressedComponent;
+                if(colorElipse.isDisabled())
+                {
+                    return;
+                }
                 Ellipse2D.Double elipse2D = colorElipse.getElipse();
 
                 elipse2D.setFrame(currentPoint.getX() - ((double)elipseWidth/2.0), currentPoint.getY() - ((double)elipseHeight/2.0), elipseWidth, elipseHeight);

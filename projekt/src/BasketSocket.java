@@ -4,13 +4,28 @@ import java.awt.geom.Rectangle2D;
 
 public class BasketSocket extends ImageRectangle {
     private Basket basket = null;
+    // pole pozwalajace ustalic czy wybrano odpowiednia kolejnosc kolorow, gdyz rysowany jest on zawsze w kolejnosci swoich wewnetrznych wspolrzednych
+//    private int colorOrderMatchIndex = 0;
 
-    public BasketSocket(ImageIcon image, Rectangle2D.Double rectangle, Basket basket) {
-        super(image, rectangle);
-        this.basket = basket;
+    private ColorOrder colorOrder;
+
+    public ColorOrder getColor() {
+        return colorOrder;
     }
-        public BasketSocket(ImageIcon image, Rectangle2D.Double rectangle) {
+
+    public void setColor(ColorOrder colorOrder) {
+        this.colorOrder = colorOrder;
+    }
+
+//    public BasketSocket(ImageIcon image, Rectangle2D.Double rectangle, Basket basket, int colorOrderMatchIndex) {
+//        super(image, rectangle);
+//        this.basket = basket;
+//        this.colorOrderMatchIndex = colorOrderMatchIndex;
+//    }
+        public BasketSocket(ImageIcon image, Rectangle2D.Double rectangle, ColorOrder colorOrder) {
         super(image, rectangle);
+        this.colorOrder = colorOrder;
+
     }
 
     public Basket getBasket() {

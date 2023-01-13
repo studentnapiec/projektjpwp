@@ -78,8 +78,7 @@ public class SoundPlayer {
     }
 
     public void setSoundList(List<URI> soundFileUriList) {
-
-
+        clipList = new ArrayList<>();
         for (int i = 0; i < soundFileUriList.size(); i++) {
             try {
 //                clipList = new ArrayList<Clip>(soundFileUriList.size());
