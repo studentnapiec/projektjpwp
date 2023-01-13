@@ -56,10 +56,13 @@ public class ImagePanel extends JPanel {
 
 
 
-    static int roundTime = 20;
+
+    static int startRoundTime = 20;
+    static int roundTime = startRoundTime;
     static int roundRemainingTime=roundTime;
 
     static int basketsDocked = 0;
+    static int colorElipsesDocked = 0;
 
     Random random = new Random();
     JLabel timeLabel;
@@ -77,6 +80,12 @@ public class ImagePanel extends JPanel {
 
             if (roundRemainingTime <= 0){
                 gameOverFlag = true;
+                timer.stop();
+                repaint();
+                return;
+            }
+
+            if (levelChanged){
                 timer.stop();
                 repaint();
                 return;
@@ -105,9 +114,10 @@ public class ImagePanel extends JPanel {
 
     static final String[] choices = {"MENU","Rozpocznij od nowa", "Zakoncz"};
     JPanel panel;
-    JLabel level;
+    JLabel levelLabel;
     JLabel user;
 
+    int level = 1;
     SoundPlayer soundPlayer = new SoundPlayer();
 
     List<URI> soundUriList;
@@ -118,6 +128,7 @@ public class ImagePanel extends JPanel {
     List<ColorElipse> colorElipseList;
 
     List<Integer> colorsOrderIndexes = new ArrayList<>(Arrays.asList(0, 1, 2, 3));
+    private static boolean levelChanged = false;
 
     void initAndShuffleGraphicSoundElements(){
         final int defaultArraySize = 4;
@@ -186,6 +197,7 @@ public class ImagePanel extends JPanel {
 
         soundUriList = Arrays.asList(soundsArray);
         soundPlayer.setSoundList(soundUriList);
+
 //
 //        basketList = List.of(
 //                new Basket(blueBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight)),
@@ -208,7 +220,13 @@ public class ImagePanel extends JPanel {
 //                new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(237,28,36))
 //        );
     }
-
+    private void levelUp(Graphics g){
+        level++;
+        levelLabel.setText("         Level: " + level);
+        levelChanged = true;
+        nextLevel(g);
+        timer.stop();
+    }
 
     ImagePanel() {
 
@@ -236,9 +254,9 @@ public class ImagePanel extends JPanel {
 
         scoreLabel = new JLabel();
         scoreLabel.setVisible(true);
-        level = new JLabel();
+        levelLabel = new JLabel();
 
-        level.setVisible(true);
+        levelLabel.setVisible(true);
 
         user = new JLabel();
 
@@ -248,7 +266,7 @@ public class ImagePanel extends JPanel {
         panel.setBorder(BorderFactory.createLineBorder(Color.black));
 
         panel.add(jMenu);
-        panel.add(level);
+        panel.add(levelLabel);
         panel.add(timeLabel);
         panel.add(scoreLabel);
         panel.add(user);
@@ -280,7 +298,7 @@ public class ImagePanel extends JPanel {
 
     public void initGame(){
         timeLabel.setText("     Time: " + simpleDateFormat.format(new Date(TimeUnit.SECONDS.toMillis(roundTime))));
-        level.setText("         Level: 1");
+        levelLabel.setText("         Level: 1");
         scoreLabel.setText("     Score: " + "0");
         user.setText("          User: Student");
         timerSound.start();
@@ -299,7 +317,7 @@ public class ImagePanel extends JPanel {
         super.paintComponent(g);
 
         basketsDocked = 0;
-
+        colorElipsesDocked = 0;
 
             for (BasketSocket basketSocket : basketSocketList) {
                 if (basketSocket.getBasket() != null && basketSocket.getBasket().isDockedInSocket()) {
@@ -311,14 +329,18 @@ public class ImagePanel extends JPanel {
 
 
         for (ColorElipse colorElipse: colorElipseList) {
+            if (colorElipse.isDockedInSocket()) {
+                colorElipsesDocked += 1;
+            }
+
             if(!colorElipse.isDisabled() && basketsDocked == basketList.size()) {
                 g2.setColor(colorElipse.getRgbColorToPaint());
                 Ellipse2D.Double elipse2D = colorElipse.getElipse();
                 g2.fill(elipse2D);
-//              g.drawOval((int)elipse2D.getX(), (int)elipse2D.getY(), colorElipse.getWidth(), colorElipse.getHeight());
-//              g.fillOval((int)elipse2D.getX(), (int)elipse2D.getY(), colorElipse.getWidth(), colorElipse.getHeight());
             }
         }
+
+
 
 
 //        if (basketsDocked == basketList.size()){
@@ -335,11 +357,19 @@ public class ImagePanel extends JPanel {
             timer.start();
         }
 
+
+        if(colorElipsesDocked == colorElipseList.size() && !levelChanged){
+            levelUp(g);
+        }
+
+        if(colorElipsesDocked == colorElipseList.size()) {
+            nextLevel(g);
+        }
+
         if(gameOverFlag){
 //            timer.stop();
             gameOver(g);
         }
-
 
     }
 
@@ -350,13 +380,24 @@ public class ImagePanel extends JPanel {
         g.drawString("Game Over", 300, 300);
 
         g.setFont(new Font("arial", Font.BOLD, 20));
-        g.drawString("Space to RESTART", 350, 340);
+        g.drawString("Enter to RESTART", 350, 340);
         this.requestFocus();
         repaint();
         gameOverFlag = true;
+        timer.stop();
 
         this.removeMouseListener(mouseClickListener);
         this.removeMouseMotionListener(mouseDragListener);
+    }
+    private void nextLevel(Graphics g){
+        g.setColor(Color.black);
+        g.setFont(new Font("arial", Font.BOLD, 50));
+        g.drawString("Game Time: " + simpleDateFormat.format(new Date(TimeUnit.SECONDS.toMillis((roundTime - roundRemainingTime)))), 300, 300);
+
+        g.setFont(new Font("arial", Font.BOLD, 20));
+        g.drawString("Space to NEXT LEVEL", 425, 340);
+        this.requestFocus();
+        repaint();
     }
 
     public int getRandomNextInt(int minInclusive, int maxInclusive) {
@@ -364,7 +405,7 @@ public class ImagePanel extends JPanel {
     }
     
 
-    //restart to next level
+    //restart
     private void restartGame(){
 
         initAndShuffleGraphicSoundElements();
@@ -389,6 +430,53 @@ public class ImagePanel extends JPanel {
         for (ColorElipse colorElipse:colorElipseList) {
             int randXFromScreenRange = getRandomNextInt(50, 800);
             int randYFromScreenRange = getRandomNextInt(80, 250);
+            colorElipse.setDockedInSocket(false);
+            colorElipse.setDisabled(false);
+            colorElipse.setElipse(new Ellipse2D.Double(randXFromScreenRange, randYFromScreenRange, elipseWidth, elipseHeight));
+        }
+
+        // restart to next level
+        level = 1;
+        gameScore = 0;
+        roundRemainingTime = startRoundTime;
+        roundTime = startRoundTime;
+
+        isAfterSoundsRepaintedFrame = false;
+        levelChanged = false;
+        gameOverFlag = false;
+        setIsSoundsPlayed(false);
+        initGame();
+        initSound();
+        timerSound.start();
+        repaint();
+    }
+
+//reset to next level
+    private void resetGame(){
+
+        initAndShuffleGraphicSoundElements();
+
+        this.addMouseListener(mouseClickListener);
+        this.addMouseMotionListener(mouseDragListener);
+
+        for (BasketSocket basketSocket:basketSocketList) {
+            basketSocket.setImageIcon(emptyBasketSocketIcon);
+            basketSocket.setBasket(null);
+        }
+
+        for (Basket basket:basketList) {
+
+            int randXFromScreenRange = getRandomNextInt(50, 800);
+            int randYFromScreenRange = getRandomNextInt(80, 250);
+            basket.setDockedInSocket(false);
+            basket.setDisabled(false);
+            basket.setRectangle(new Rectangle2D.Double(randXFromScreenRange, randYFromScreenRange, rectangleWidth, rectangleHeight));
+        }
+
+        for (ColorElipse colorElipse:colorElipseList) {
+            int randXFromScreenRange = getRandomNextInt(50, 800);
+            int randYFromScreenRange = getRandomNextInt(80, 250);
+            colorElipse.setDockedInSocket(false);
             colorElipse.setDisabled(false);
             colorElipse.setElipse(new Ellipse2D.Double(randXFromScreenRange, randYFromScreenRange, elipseWidth, elipseHeight));
         }
@@ -396,14 +484,11 @@ public class ImagePanel extends JPanel {
         // restart to next level
         roundRemainingTime = roundTime - 2;
         roundTime = roundRemainingTime;
-
-
         isAfterSoundsRepaintedFrame = false;
-        gameOverFlag = false;
+
+        timeLabel.setText("     Time: " + simpleDateFormat.format(new Date(TimeUnit.SECONDS.toMillis(roundRemainingTime))));
+
         setIsSoundsPlayed(false);
-
-
-        initGame();
         initSound();
         timer.stop();
         repaint();
@@ -473,12 +558,14 @@ public class ImagePanel extends JPanel {
 //                        }
 
                         if(colorElipse.getColor().equals(basketSocket.getBasket().getColor())){
+                            colorElipse.setDockedInSocket(true);
                             addScoreRepaint();
                             colorElipse.setDisabled(true);
                         }else {
                             gameOverFlag=true;
                             timer.stop();
                             repaint();
+                            return;
                         }
 
                         System.out.println("kolo przecina socket");
@@ -537,6 +624,7 @@ public class ImagePanel extends JPanel {
             }
 
             previousPressedComponent = null;
+
         }
     }
     private class MouseDragListener extends MouseMotionAdapter{
@@ -579,8 +667,12 @@ public class ImagePanel extends JPanel {
     private class KeyListener extends KeyAdapter{
         @Override
         public void keyReleased(KeyEvent e) {
-            if(e.getKeyCode() == KeyEvent.VK_SPACE && gameOverFlag == true){
+            if(e.getKeyCode() == KeyEvent.VK_ENTER && gameOverFlag == true){
                 restartGame();
+            }
+            if(e.getKeyCode() == KeyEvent.VK_SPACE && levelChanged == true){
+                resetGame();
+                levelChanged = false;
             }
             super.keyReleased(e);
         }

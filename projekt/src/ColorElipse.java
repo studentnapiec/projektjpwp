@@ -4,6 +4,7 @@ import java.awt.geom.Ellipse2D;
 public class ColorElipse {
 
     private boolean isDisabled = false;
+    private boolean isDockedInSocket = false;
     private Ellipse2D.Double elipse;
     private Color rgbColorToPaint;
 
@@ -22,6 +23,14 @@ public class ColorElipse {
         this.elipse = elipse;
         this.rgbColorToPaint = rgbColorToPaint;
         this.color = color;
+    }
+
+    public boolean isDockedInSocket() {
+        return isDockedInSocket;
+    }
+
+    public void setDockedInSocket(boolean dockedInSocket) {
+        isDockedInSocket = dockedInSocket;
     }
 
     public Ellipse2D.Double getElipse() {
