@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +35,11 @@ public class ImagePanel extends JPanel {
     ImageIcon pinkBasketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\pink-basket.png")));
     ImageIcon redBasketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\red-basket.png")));
     ImageIcon emptyBasketSocketIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\empty-basket-socket.png")));
+
+    URI blueSound;
+    URI greenSound;
+    URI pinkSound;
+    URI redSound;
 
 //    ImageIcon emptyBasketSocketIcon = new ImageIcon(((new ImageIcon(Objects.requireNonNull(getClass().getResource("images\\baskets\\empty-basket-socket.png")))).getImage()).getScaledInstance(70, 100, java.awt.Image.SCALE_SMOOTH));
 
@@ -76,6 +82,22 @@ public class ImagePanel extends JPanel {
         }
         });
 
+    Timer timerSound = new Timer(100, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            if(isAfterSoundsRepaintedFrame){
+                return;
+            }
+            else if (getIsSoundsPlayed()){
+                repaint();
+                isAfterSoundsRepaintedFrame = true;
+                return;
+            }
+        }
+    });
+
+
+
 
     List<Basket> basketList = List.of(
             new Basket(blueBasketIcon),
@@ -98,12 +120,18 @@ public class ImagePanel extends JPanel {
             new ColorElipse(new Ellipse2D.Double(400, 600, elipseWidth, elipseHeight), new Color(237,28,36))
     );
 
+    static boolean isSoundsPlayed = false;
 
-
-    public static final String[] choices = {"MENU","Rozpocznij od nowa", "Zakoncz"};
+    static final String[] choices = {"MENU","Rozpocznij od nowa", "Zakoncz"};
     JPanel panel;
     JLabel level;
     JLabel user;
+
+    SoundPlayer soundPlayer = new SoundPlayer();
+
+    List<URI> soundUriList;
+
+    boolean isAfterSoundsRepaintedFrame = false;
 
 
     ImagePanel() {
@@ -157,6 +185,27 @@ public class ImagePanel extends JPanel {
 //            colorElipse.addMouseMotionListener(new DragListener());
 //        }
         // ustawianie polozenia kolorow
+        try {
+            blueSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\blue.wav")).toURI();
+            greenSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\green.wav")).toURI();
+            pinkSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\pink.wav")).toURI();
+            redSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\red.wav")).toURI();
+            soundUriList = List.of(
+                    blueSound, greenSound, pinkSound, redSound
+            );
+
+
+        }catch (java.net.URISyntaxException e){
+            throw new RuntimeException("Niepoprawny adres uri pliku dzwiekowego");
+        }
+
+
+        timerSound.start();
+
+        if(!getIsSoundsPlayed()){
+            soundPlayer.setSoundList(soundUriList);
+            soundPlayer.playSoundList();
+        }
 
     }
 
@@ -164,7 +213,15 @@ public class ImagePanel extends JPanel {
         timeLabel.setText("     Time: " + simpleDateFormat.format(new Date(TimeUnit.SECONDS.toMillis(roundTime))));
         level.setText("         Level: 1");
         user.setText("          user: Student");
+        timerSound.start();
     }
+
+    public void initSound(){
+        if(!getIsSoundsPlayed()){
+            soundPlayer.playSoundList();
+        }
+    }
+
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -172,19 +229,14 @@ public class ImagePanel extends JPanel {
         super.paintComponent(g);
 
         basketsDocked = 0;
-        for (BasketSocket basketSocket: basketSocketList) {
-            basketSocket.getImageIcon().paintIcon(this, g, (int) basketSocket.getRectangle().getX(), (int) basketSocket.getRectangle().getY());
-            if(basketSocket.getBasket() != null && basketSocket.getBasket().isDockedInSocket()){
-                basketsDocked+=1;
-            }
-        }
 
-        for (Basket basket: basketList) {
-            if(!basket.isDisabled()){
-                basket.getImageIcon().paintIcon(this, g, (int) basket.getRectangle().getX(), (int) basket.getRectangle().getY());
-            }
-        }
 
+            for (BasketSocket basketSocket : basketSocketList) {
+                basketSocket.getImageIcon().paintIcon(this, g, (int) basketSocket.getRectangle().getX(), (int) basketSocket.getRectangle().getY());
+                if (basketSocket.getBasket() != null && basketSocket.getBasket().isDockedInSocket()) {
+                    basketsDocked += 1;
+                }
+            }
 
 
         for (ColorElipse colorElipse: colorElipseList) {
@@ -204,7 +256,16 @@ public class ImagePanel extends JPanel {
 //            gameOver(g);
 //        }
 //        timer.setInitialDelay(0);
-        timer.start();
+
+        if (getIsSoundsPlayed()) {
+            for (Basket basket : basketList) {
+                if (!basket.isDisabled()) {
+                    basket.getImageIcon().paintIcon(this, g, (int) basket.getRectangle().getX(), (int) basket.getRectangle().getY());
+                }
+            }
+            timer.start();
+        }
+
 
     }
 
@@ -248,8 +309,14 @@ public class ImagePanel extends JPanel {
 
         roundRemainingTime = roundTime - 2;
         roundTime = roundRemainingTime;
-        initGame();
+        isAfterSoundsRepaintedFrame = false;
         gameOverFlag = false;
+        setIsSoundsPlayed(false);
+
+
+        initGame();
+        initSound();
+        timer.stop();
         repaint();
     }
 
@@ -360,4 +427,12 @@ public class ImagePanel extends JPanel {
             super.keyReleased(e);
         }
     }
+
+    public synchronized static void setIsSoundsPlayed(boolean isSoundsPlayed) {
+        ImagePanel.isSoundsPlayed = isSoundsPlayed;
+    }
+    public static boolean getIsSoundsPlayed(){
+        return ImagePanel.isSoundsPlayed;
+    }
+
 }
