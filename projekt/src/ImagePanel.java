@@ -57,7 +57,7 @@ public class ImagePanel extends JPanel {
 
 
 
-    static int startRoundTime = 20;
+    static int startRoundTime = 30;
     static int roundTime = startRoundTime;
     static int roundRemainingTime=roundTime;
 
@@ -125,7 +125,7 @@ public class ImagePanel extends JPanel {
     boolean isAfterSoundsRepaintedFrame = false;
     List<Basket> basketList;
     List<BasketSocket> basketSocketList;
-    List<ColorElipse> colorElipseList;
+    List<ColorElipse> colorElipseList = new ArrayList<>();
 
     List<Integer> colorsOrderIndexes = new ArrayList<>(Arrays.asList(0, 1, 2, 3));
     private static boolean levelChanged = false;
@@ -142,26 +142,21 @@ public class ImagePanel extends JPanel {
 
         Basket[] basketArray = new Basket[defaultArraySize];
         BasketSocket[] basketSocketArray = new BasketSocket[defaultArraySize];
-        ColorElipse[] colorElipseArray = new ColorElipse[defaultArraySize];
+//        ColorElipse[] colorElipseArray = new ColorElipse[defaultArraySize];
         URI[] soundsArray = new URI[defaultArraySize];
 
-
-
-//        basketArray[colorsOrderIndexes.get(0)] = new Basket(blueBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.values()[colorsOrderIndexes.get(0)]);
-//        basketArray[colorsOrderIndexes.get(1)] = new Basket(greenBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.values()[colorsOrderIndexes.get(1)]);
-//        basketArray[colorsOrderIndexes.get(2)] = new Basket(pinkBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight),  ColorOrder.values()[colorsOrderIndexes.get(2)]);
-//        basketArray[colorsOrderIndexes.get(3)] = new Basket(redBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.values()[colorsOrderIndexes.get(3)]);
 
         basketArray[0] = new Basket(blueBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.BLUE);
         basketArray[1] = new Basket(greenBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.GREEN);
         basketArray[2] = new Basket(pinkBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight),  ColorOrder.PINK);
         basketArray[3] = new Basket(redBasketIcon, new Rectangle2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), rectangleWidth, rectangleHeight), ColorOrder.RED);
 
-
-        colorElipseArray[0] = new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(153,217,234), ColorOrder.BLUE);
-        colorElipseArray[1] = new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(181,230,29), ColorOrder.GREEN);
-        colorElipseArray[2] = new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(255,174,201), ColorOrder.PINK);
-        colorElipseArray[3] = new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(237,28,36), ColorOrder.RED);
+        for (int i = 0; i < level; i++) {
+            colorElipseList.add(new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(153,217,234), ColorOrder.BLUE));
+            colorElipseList.add(new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(181,230,29), ColorOrder.GREEN));
+            colorElipseList.add(new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(255,174,201), ColorOrder.PINK));
+            colorElipseList.add(new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(237,28,36), ColorOrder.RED));
+        }
 
         try {
             blueSound = Objects.requireNonNull(getClass().getResource("sounds\\wav\\blue.wav")).toURI();
@@ -193,7 +188,7 @@ public class ImagePanel extends JPanel {
 
         basketList = Arrays.asList(basketArray);
         basketSocketList = Arrays.asList(basketSocketArray);
-        colorElipseList = Arrays.asList(colorElipseArray);
+//        colorElipseList = Arrays.asList(colorElipseArray);
 
         soundUriList = Arrays.asList(soundsArray);
         soundPlayer.setSoundList(soundUriList);
@@ -407,7 +402,7 @@ public class ImagePanel extends JPanel {
 
     //restart
     private void restartGame(){
-
+        level = 1;
         initAndShuffleGraphicSoundElements();
 
         this.addMouseListener(mouseClickListener);
@@ -436,7 +431,6 @@ public class ImagePanel extends JPanel {
         }
 
         // restart to next level
-        level = 1;
         gameScore = 0;
         roundRemainingTime = startRoundTime;
         roundTime = startRoundTime;
