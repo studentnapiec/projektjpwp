@@ -18,6 +18,7 @@ public class ImagePanel extends JPanel {
     public static final int firstBacketSocketX = 20;
     public static final int basketSocketsXGap = 260;
     public static final int timerDuration = 1;
+    public static final int lossOfTime = 2;
 
     public static boolean gameOverFlag = false;
 
@@ -57,12 +58,14 @@ public class ImagePanel extends JPanel {
 
 
 
-    static int startRoundTime = 30;
+    static int startRoundTime = 60;
     static int roundTime = startRoundTime;
     static int roundRemainingTime=roundTime;
 
     static int basketsDocked = 0;
     static int colorElipsesDocked = 0;
+    private static boolean isWin = false;
+
 
     Random random = new Random();
     JLabel timeLabel;
@@ -85,7 +88,7 @@ public class ImagePanel extends JPanel {
                 return;
             }
 
-            if (levelChanged){
+            if (levelChanged || isWin){
                 timer.stop();
                 repaint();
                 return;
@@ -117,7 +120,6 @@ public class ImagePanel extends JPanel {
     JLabel levelLabel;
     JLabel user;
     JButton jMenu;
-
     int level = 1;
     SoundPlayer soundPlayer = new SoundPlayer();
 
@@ -130,6 +132,7 @@ public class ImagePanel extends JPanel {
 
     List<Integer> colorsOrderIndexes = new ArrayList<>(Arrays.asList(0, 1, 2, 3));
     private static boolean levelChanged = false;
+    private static int maxlevel = 3;
 
     void initAndShuffleGraphicSoundElements(){
         final int defaultArraySize = 4;
@@ -217,8 +220,25 @@ public class ImagePanel extends JPanel {
 //                new ColorElipse(new Ellipse2D.Double(getRandomNextInt(50, 800), getRandomNextInt(80, 250), elipseWidth, elipseHeight), new Color(237,28,36))
 //        );
     }
+
+
+    private void win(Graphics g){
+
+        g.setColor(Color.black);
+        g.setFont(new Font("arial", Font.BOLD, 50));
+        g.drawString("WIN!", 425, 300);
+
+        g.setFont(new Font("arial", Font.BOLD, 20));
+        g.drawString("Select option from menu", 350, 340);
+        repaint();
+
+    }
     private void levelUp(Graphics g){
         level++;
+        if(level>maxlevel){
+            isWin = true;
+            return;
+        }
         levelLabel.setText("         Level: " + level);
         levelChanged = true;
         nextLevel(g);
@@ -401,13 +421,16 @@ public class ImagePanel extends JPanel {
             levelUp(g);
         }
 
-        if(colorElipsesDocked == colorElipseList.size()) {
+        if(colorElipsesDocked == colorElipseList.size() && !isWin) {
             nextLevel(g);
         }
 
         if(gameOverFlag){
 //            timer.stop();
             gameOver(g);
+        }
+        if(isWin){
+            win(g);
         }
 
     }
@@ -481,10 +504,12 @@ public class ImagePanel extends JPanel {
 
         isAfterSoundsRepaintedFrame = false;
         levelChanged = false;
+        isWin = false;
         gameOverFlag = false;
         setIsSoundsPlayed(false);
         initGame();
         initSound();
+        timer.stop();
         timerSound.start();
         repaint();
     }
@@ -520,7 +545,7 @@ public class ImagePanel extends JPanel {
         }
 
         // restart to next level
-        roundRemainingTime = roundTime - 2;
+        roundRemainingTime = roundTime - lossOfTime;
         roundTime = roundRemainingTime;
         isAfterSoundsRepaintedFrame = false;
 
@@ -606,7 +631,6 @@ public class ImagePanel extends JPanel {
                             return;
                         }
 
-                        System.out.println("kolo przecina socket");
                     }
                 }
             }
@@ -641,7 +665,6 @@ public class ImagePanel extends JPanel {
                             basketSocket.setImageIcon(basket.getImageIcon());
                             basket.setDockedInSocket(true);
                             basket.setDisabled(true);
-                            System.out.println("kosz przecina socket");
                             addScoreRepaint();
                         }
                         else{
@@ -708,10 +731,17 @@ public class ImagePanel extends JPanel {
             if(e.getKeyCode() == KeyEvent.VK_ENTER && gameOverFlag == true){
                 restartGame();
             }
+
             if(e.getKeyCode() == KeyEvent.VK_SPACE && levelChanged == true){
                 resetGame();
                 levelChanged = false;
             }
+
+//            if(e.getKeyCode() == KeyEvent.VK_SPACE && isWin == true){
+//                resetGame();
+//                isWin = false;
+//
+//            }
             super.keyReleased(e);
         }
     }
