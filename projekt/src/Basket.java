@@ -28,9 +28,6 @@ public class Basket extends ImageRectangle {
         super(image, rectangle);
         this.colorOrder = colorOrder;
     }
-//    public Basket(ImageIcon image){
-//        super(image, new Rectangle2D.Double(0,0,140,200));
-//    }
 
     public boolean isDisabled() {
         return isDisabled;

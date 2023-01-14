@@ -81,18 +81,14 @@ public class SoundPlayer {
         clipList = new ArrayList<>();
         for (int i = 0; i < soundFileUriList.size(); i++) {
             try {
-//                clipList = new ArrayList<Clip>(soundFileUriList.size());
                 File file = new File(soundFileUriList.get(i));
                 AudioInputStream sound = AudioSystem.getAudioInputStream(file);
                 clipList.add(AudioSystem.getClip());
-//                clipList.set(i, AudioSystem.getClip());
                 clipList.get(i).open(sound);
 
                 clipList.get(i).addLineListener(e -> {
-//                    if (e.getType() == LineEvent.Type.STOP && currentSoundPlayedIndex {
                     if (e.getType() == LineEvent.Type.STOP) {
                         playNextSound();
-//                        lastplayedCounter
                     }
                 });
 
