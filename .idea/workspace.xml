@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c3544780-bd70-4322-aa9d-cc3075210a21" name="Changes" comment="Wyrzucono niepotrzebne grafiki">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Enum" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-11.0.15.1/lib/src.zip!/java.base/java/util/ArrayList.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-11.0.15.1/lib/src.zip!/java.base/java/util/EventListener.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-11.0.15.1/lib/src.zip!/java.base/java/util/List.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-11.0.15.1/lib/src.zip!/java.desktop/java/awt/geom/Rectangle2D.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-11.0.15.1/lib/src.zip!/java.desktop/javax/sound/sampled/Line.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Program Files/Java/jdk-11.0.15.1/lib/src.zip!/java.desktop/javax/sound/sampled/LineListener.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2KC6YJFlmA375XEu1kASNLK7kLr" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\mateusz.oprawa\IdeaProjects\projektjpwp\projekt\src" />
+      <recent name="C:\Users\mateusz.oprawa\IdeaProjects\projektjpwp\projekt\src\images" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="projektjpwp" />
+      <extension name="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c3544780-bd70-4322-aa9d-cc3075210a21" name="Changes" comment="" />
+      <created>1673466264067</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1673466264067</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Poprawiono przeciaganie kolorow">
+      <created>1673467484150</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1673467484150</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Dodano koszyki oraz mozliwosc ich przemieszczania">
+      <created>1673534446193</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1673534446193</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Dodano obsluge kolizji koszyka z przestrzenia na koszyk">
+      <created>1673538739620</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1673538739620</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Dodano timer i obsluge zakonczenia gry">
+      <created>1673603905731</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1673603905731</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Dodano obsluge dzwieku">
+      <created>1673624258902</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1673624258902</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Dodano obsluge punktow wyniku">
+      <created>1673646625871</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1673646625871</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Poprawiono przejscie do nastepnego poziomu i restart gry">
+      <created>1673652734399</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1673652734399</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Dodano wiecej kolorow do przyporzadkowania">
+      <created>1673653416331</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1673653416331</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Dodano menu gry">
+      <created>1673656549952</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1673656549952</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Dodano mozliwosc wygrania">
+      <created>1673659115653</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1673659115653</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Wyrzucono niepotrzebny zakomentowany kod">
+      <created>1673705767395</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1673705767395</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Wyrzucono folder buildu gry">
+      <created>1673706568119</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1673706568119</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Poprawiono przeciaganie kolorow" />
+    <MESSAGE value="Dodano koszyki oraz mozliwosc ich przemieszczania" />
+    <MESSAGE value="Dodano obsluge kolizji koszyka z przestrzenia na koszyk" />
+    <MESSAGE value="Dodano timer i obsluge zakonczenia gry" />
+    <MESSAGE value="Dodano obsluge dzwieku" />
+    <MESSAGE value="Dodano obsluge punktow wyniku" />
+    <MESSAGE value="Poprawiono przejscie do nastepnego poziomu i restart gry" />
+    <MESSAGE value="Dodano wiecej kolorow do przyporzadkowania" />
+    <MESSAGE value="Dodano menu gry" />
+    <MESSAGE value="Dodano mozliwosc wygrania" />
+    <MESSAGE value="Wyrzucono niepotrzebny zakomentowany kod" />
+    <MESSAGE value="Wyrzucono folder buildu gry" />
+    <option name="LAST_COMMIT_MESSAGE" value="Wyrzucono folder buildu gry" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>14</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/SoundPlayer.java</url>
+          <line>42</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/SoundPlayer.java</url>
+          <line>41</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/SoundPlayer.java</url>
+          <line>35</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/SoundPlayer.java</url>
+          <line>102</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/SoundPlayer.java</url>
+          <line>106</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/SoundPlayer.java</url>
+          <line>81</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>553</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>581</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>540</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>481</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>139</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>177</line>
+          <option name="timeStamp" value="53" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>74</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>368</line>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>525</line>
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/SoundPlayer.java</url>
+          <line>121</line>
+          <option name="timeStamp" value="61" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/projekt/src/ImagePanel.java</url>
+          <line>402</line>
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
