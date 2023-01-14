@@ -121,4 +121,13 @@ public class SoundPlayer {
             }
         }
     }
+
+    public void terminate(){
+        for (Clip clip : clipList) {
+            clip.stop();
+            clip.setMicrosecondPosition(0);
+        }
+        ImagePanel.setIsSoundsPlayed(true);
+        currentSoundPlayedIndex = 0;
+    }
 }

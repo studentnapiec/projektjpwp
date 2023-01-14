@@ -116,6 +116,7 @@ public class ImagePanel extends JPanel {
     JPanel panel;
     JLabel levelLabel;
     JLabel user;
+    JButton jMenu;
 
     int level = 1;
     SoundPlayer soundPlayer = new SoundPlayer();
@@ -125,7 +126,7 @@ public class ImagePanel extends JPanel {
     boolean isAfterSoundsRepaintedFrame = false;
     List<Basket> basketList;
     List<BasketSocket> basketSocketList;
-    List<ColorElipse> colorElipseList = new ArrayList<>();
+    List<ColorElipse> colorElipseList;
 
     List<Integer> colorsOrderIndexes = new ArrayList<>(Arrays.asList(0, 1, 2, 3));
     private static boolean levelChanged = false;
@@ -142,6 +143,7 @@ public class ImagePanel extends JPanel {
 
         Basket[] basketArray = new Basket[defaultArraySize];
         BasketSocket[] basketSocketArray = new BasketSocket[defaultArraySize];
+        colorElipseList = new ArrayList<>();
 //        ColorElipse[] colorElipseArray = new ColorElipse[defaultArraySize];
         URI[] soundsArray = new URI[defaultArraySize];
 
@@ -233,14 +235,56 @@ public class ImagePanel extends JPanel {
         this.addMouseMotionListener(mouseDragListener);
         this.addKeyListener(keyListener);
 
-        final JComboBox<String> cb = new JComboBox<String>(choices);
 
-        cb.setMaximumSize(cb.getPreferredSize()); // added code
-        cb.setAlignmentX(Component.CENTER_ALIGNMENT);// added code
-        panel.add(cb);
+        final JPopupMenu popupmenu = new JPopupMenu("Game Menu");
+        JMenuItem restartGameMenuItem = new JMenuItem("Restart Game");
+        JMenuItem endGameMenuItem = new JMenuItem("End Game");
+
+        restartGameMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                soundPlayer.terminate();
+                restartGame();
+            }
+        });
+
+        endGameMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        popupmenu.add(restartGameMenuItem);
+        popupmenu.add(endGameMenuItem);
+        panel.add(popupmenu);
+
+//        final JComboBox<String> cb = new JComboBox<String>(choices);
+//
+//        cb.setMaximumSize(cb.getPreferredSize());
+//        cb.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        panel.add(cb);
 
 
-        JButton jMenu = new JButton("MENU");
+        jMenu = new JButton("MENU");
+//        jMenu.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                super.mouseClicked(e);
+//                int popupX = jMenu.getX();
+//                int popupY = jMenu.getY() + jMenu.getHeight();
+//                popupmenu.show(jMenu, popupX, popupY);
+//            }
+//        });
+
+        jMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                int popupX = jMenu.getX();
+                int popupY = jMenu.getY() + jMenu.getHeight();
+                popupmenu.show(jMenu, popupX, popupY);
+                repaint();
+            }
+        });
 
         timeLabel = new JLabel();
 
@@ -378,7 +422,7 @@ public class ImagePanel extends JPanel {
         g.drawString("Enter to RESTART", 350, 340);
         this.requestFocus();
         repaint();
-        gameOverFlag = true;
+//        gameOverFlag = true;
         timer.stop();
 
         this.removeMouseListener(mouseClickListener);
@@ -678,5 +722,7 @@ public class ImagePanel extends JPanel {
     public static boolean getIsSoundsPlayed(){
         return ImagePanel.isSoundsPlayed;
     }
+
+
 
 }
